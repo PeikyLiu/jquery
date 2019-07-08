@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <link rel="stylesheet" type="text/css" href="./index.css">
+  <script type="text/javascript" src="./javascript/jquery-3.4.1.min.js"></script>
+</head>
+<body>
+<div class="todos-container">
+  <h1 class="todos-title">todos</h1>
+  <div class="todos-content">
+    <div class="todos-input-cell">
+      <input class="todos-input" id="todo-input" type="text" name="todo" placeholder="请输入计划事项">
+    </div>
+    <div class="todos-list" id="todos-list">
+      <div class="todo-item">
+        <div class="todo-item-hd"></div>
+        <div class="todo-item-bd">打一瓶酱油</div>
+        <div class="todo-item-ft">x</div>
+      </div>
+      <div class="todo-item active">
+        <div class="todo-item-hd"></div>
+        <div class="todo-item-bd">跑步800米</div>
+        <div class="todo-item-ft">x</div>
+      </div>
+    </div>
+  </div>  
+</div>
+</body>
+<script type="text/javascript">
+  // $(".todos-input").on('keyup',function(e){
+  //   console.log(e.which,this.value);
+  //   if(e.which == 13 && this.value){
+  //     let dom = `<div class="todo-item"><div class="todo-item-hd"></div><div class="todo-item-bd">${this.value.trim()}</div><div class="todo-item-ft">x</div></div>`;
+  //     $('.todos-list').append(dom);
+  //     this.value = '';
+  //   };
+  // });
+  // $(".todo-item-hd").on('click',function(e){
+  //   $(this).parent().toggleClass('active')
+  // });
+  // $(".todo-item-ft").on('click',function(){
+  //   $(this).parent().remove();
+  // // });
+  // $('.todos-list').on('click', '.todo-item-hd', function(){
+  //   console.log(this);
+  //   $(this).parent().toggleClass('active')
+  // })
+  // $('.todos-list').on('click', '.todo-item-ft', function(){
+  //   console.log(this);
+  //   $(this).parent().remove();
+  // })
+  const PAGE = {
+    init: function() {
+      this.bind();
+    },
+    bind: function() {
+      $(".todos-input").on('keyup',this.addTodo);
+      $(".todos-list").on('click','.todo-item-hd',this.toggleTodo);
+      $(".todos-list").on('click','.todo-item-ft',this.removeTodo);
+    },
+    addTodo:function(e){
+      if(e.which == 13 && this.value){
+        let dom = `<div class="todo-item">
+          <div class="todo-item-hd"></div>
+          <div class="todo-item-bd">${this.value.trim()}</div>
+          <div class="todo-item-ft">x</div>
+        </div>`;
+        $(".todos-list").append(dom);
+        this.value = '';
+      }
+    },
+    toggleTodo:function(){
+      $(this).parent().toggleClass('active');
+    },
+    removeTodo:function(){
+      $(this).parent().remove();
+    }
+  }
+
+  PAGE.init();
+  
+  
+</script>
+</html>
