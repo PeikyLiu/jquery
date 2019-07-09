@@ -14,7 +14,7 @@
       <input class="todos-input" id="todo-input" type="text" name="todo" placeholder="请输入计划事项">
     </div>
     <div class="todos-list" id="todos-list">
-      <!-- <div class="todo-item">
+      <div class="todo-item">
         <div class="todo-item-hd"></div>
         <div class="todo-item-bd">打一瓶酱油</div>
         <div class="todo-item-ft">x</div>
@@ -23,7 +23,7 @@
         <div class="todo-item-hd"></div>
         <div class="todo-item-bd">跑步800米</div>
         <div class="todo-item-ft">x</div>
-      </div> -->
+      </div>
     </div>
     <div class="todos-filter" id="todos-filter">
       <span class="filter-item active">全部</span>
@@ -34,58 +34,6 @@
 </div>
 </body>
 <script type="text/javascript">
-  // $(".todos-input").on('keyup',function(e){
-  //   console.log(e.which,this.value);
-  //   if(e.which == 13 && this.value){
-  //     let dom = `<div class="todo-item"><div class="todo-item-hd"></div><div class="todo-item-bd">${this.value.trim()}</div><div class="todo-item-ft">x</div></div>`;
-  //     $('.todos-list').append(dom);
-  //     this.value = '';
-  //   };
-  // });
-  // $(".todo-item-hd").on('click',function(e){
-  //   $(this).parent().toggleClass('active')
-  // });
-  // $(".todo-item-ft").on('click',function(){
-  //   $(this).parent().remove();
-  // // });
-  // $('.todos-list').on('click', '.todo-item-hd', function(){
-  //   console.log(this);
-  //   $(this).parent().toggleClass('active')
-  // })
-  // $('.todos-list').on('click', '.todo-item-ft', function(){
-  //   console.log(this);
-  //   $(this).parent().remove();
-  // })
-  // const PAGE = {
-  //   init: function() {
-  //     this.bind();
-  //   },
-  //   bind: function() {
-  //     $(".todos-input").on('keyup',this.addTodo);
-  //     $(".todos-list").on('click','.todo-item-hd',this.toggleTodo);
-  //     $(".todos-list").on('click','.todo-item-ft',this.removeTodo);
-  //   },
-  //   addTodo:function(e){
-      // if(e.which == 13 && this.value){
-      //   let dom = `<div class="todo-item">
-      //     <div class="todo-item-hd"></div>
-      //     <div class="todo-item-bd">${this.value.trim()}</div>
-      //     <div class="todo-item-ft">x</div>
-      //   </div>`;
-      //   $(".todos-list").append(dom);
-      //   this.value = '';
-      // }
-  //   },
-  //   toggleTodo:function(){
-  //     $(this).parent().toggleClass('active');
-  //   },
-  //   removeTodo:function(){
-  //     $(this).parent().remove();
-  //   }
-  // }
-
-  // PAGE.init();
-  
   const PAGE = {
     data:{
       todos: [{
@@ -103,14 +51,19 @@
       filter: 1,
     },
     init:function(){
-      this.bind();
+      this.getTodos();
+      this.saveTodos();
       this.render();
+      this.bind();
+      
     },
     bind:function(){
       $("#todo-input").on('keyup',this.addTodo);
       $("#todos-list").on('click','.todo-item-hd',this.toggle);
       $("#todos-list").on('click','.todo-item-ft',this.remove);
       $("#todos-filter").on('click','.filter-item',this.filter);
+      $(window).on('unload',this.saveTodos);
+      console.log(window,123)
     },
     render:function(){
       let todos = PAGE.data.todos;
@@ -148,43 +101,46 @@
     },
     addTodo:function(e){
       if(e.which == 13 && this.value){
-        let dom = `<div class="todo-item">
-          <div class="todo-item-hd"></div>
-          <div class="todo-item-bd">${this.value.trim()}</div>
-          <div class="todo-item-ft">x</div>
-        </div>`;
-        $(".todos-list").append(dom); 
         let todos = PAGE.data.todos;
         todos.push({
           title:`${this.value.trim()}`,
           completed: false
         })
         this.value = '';
-      };  
-      PAGE.render();
+        PAGE.render();
+      };    
     },
     toggle:function(){
       let todos = PAGE.data.todos;
       let index = $(this).parent().data("index");
       console.log(index);
-      // let index =  todoItem[0].dataset.index;
-            todos[index].completed = !todos[index].completed;
+      todos[index].completed = !todos[index].completed;
       PAGE.render();
     },
     remove:function(){
       let todos = PAGE.data.todos;
       let index = $(this).parent().data("index");
-      // let index = todoItem[0].dataset.index;
       console.log(321); 
       todos.splice(index,1);
       PAGE.render();
     },
     filter:function(){
-      let filterItem = $(this);
-      let filter = filterItem.dataset.id;
-      PAGE.data.filter = Number(filter);
+      PAGE.data.filter = Number($(this).data('id'));
       PAGE.render();
-    }
+    },
+    saveTodos:function(){
+      let todos = PAGE.data.todos;
+      let todosStr = JSON.stringify(todos);
+      console.log(todosStr)
+      localStorage.setItem('todos',todosStr);
+    },
+    getTodos:function(){
+      let todos = localStorage.getItem('todos');
+      todos = JSON.parse(todos) || [];
+      console.log(todos);
+      PAGE.data.todos = todos;
+      this.render();
+    },
   }
   PAGE.init();
 </script>
